@@ -27,10 +27,13 @@ Tanpa pengaturan ini, slide Canva tidak bisa tampil di dalam web.
 8. Di Ruang 5, setelah kuis, tekan **Mulai Misi Blooket** (Blooket terbuka di tab baru). Setelah selesai, kembali ke tab HAKIKU, tekan **⛶ Layar Penuh**, lalu **Misi Blooket Selesai**.
 
 Catatan guru:
+- **Musik latar petualangan** berbunyi otomatis setelah Mulai Petualangan, dan berubah lebih bersemangat saat tantangan dibuka. Ada juga kicau burung, angin, serta efek suara pintu, peta, dan gembok.
+  Tombol 🔊 di kiri atas mematikan semua suara; tombol 🎵 hanya mematikan musik latar (efek tetap berbunyi).
 - Guru bisa pindah slide dengan **panah kiri/kanan** di keyboard atau clicker presentasi.
-- Di bagian atas jendela tantangan ada tombol ruang **1–5** untuk membuka ulang ruang mana saja.
 - Bila halaman dimuat ulang, tekan **Lanjutkan** untuk meneruskan dari slide terakhir, atau **Mulai dari Awal**.
-- Halaman guru (daftar tantangan, status Google Sheets, kode pintu): `https://hakiku-xmma.vercel.app/?guru=1`.
+- Halaman guru (daftar tantangan, status Google Sheets, kode pintu) dikunci dengan **PIN guru** (bawaan **8264**). Buka lewat tombol kecil **🔒 Guru** di layar awal, atau `https://hakiku-xmma.vercel.app/?guru=1`.
+  PIN salah 3 kali → terkunci 30 detik. PIN bisa diganti dengan menambah baris `pin_guru` (4–8 angka) di tab **Pengaturan** Google Sheets. Setelah selesai, tekan **🔒 Kunci Halaman Guru**.
+- Tombol pilih ruang **1–5** di jendela tantangan hanya muncul setelah guru memasukkan PIN, jadi siswa tidak bisa melompat ke ruang lain.
 - Letak tombol tiap slide tercatat di `src/data/canvaHotspots.js`. Bila tombol di Canva dipindah atau ditambah, angka di file itu perlu disesuaikan.
 
 ## Mengubah isi tantangan (Google Sheets)

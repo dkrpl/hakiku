@@ -16,6 +16,8 @@ export const ROOM_NUMBERS = [1, 2, 3, 4, 5];
 
 export const DEFAULT_SETTINGS = {
   blooketUrl: 'https://play.blooket.com/play',
+  // PIN untuk membuka halaman guru. Bisa diganti lewat baris "pin_guru" di tab Pengaturan Google Sheets.
+  teacherPin: '8264',
   // Link presentasi Canva (mode "Lihat"). Setelah kode muncul, web pindah ke link ini
   // tepat di slide pintu ruangan (memakai id halaman pintu di tiap ruang).
   // Kosongkan bila ingin tab tantangan ditutup saja.

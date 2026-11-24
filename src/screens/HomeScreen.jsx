@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ROOM_NUMBERS, SCENES } from '../data/defaultContent';
+import { setTeacherUnlocked } from '../components/TeacherGate';
 import { AlertIcon, CheckCircleIcon, ExternalLinkIcon, KeyIcon } from '../components/icons/StoryIcons';
 
 const SOURCE_LABEL = {
@@ -50,9 +51,21 @@ export function HomeScreen({ content, loadInfo, onPlaySound }) {
             dalam web dalam layar penuh, dan siswa membuka tantangan lewat tombol <strong>🎮 Tantangan</strong> tanpa
             pindah tab. Link per ruang di bawah tetap bisa dipakai bila tantangan ingin dibuka terpisah.
           </p>
-          <a href="./" className="story-btn story-btn-gold self-start inline-flex text-base px-5 py-2.5">
-            ▶ Mode Kelas (layar penuh)
-          </a>
+          <div className="flex flex-wrap gap-2">
+            <a href="./" className="story-btn story-btn-gold inline-flex text-base px-5 py-2.5">
+              ▶ Mode Kelas (layar penuh)
+            </a>
+            <button
+              type="button"
+              onClick={() => {
+                setTeacherUnlocked(false);
+                window.location.assign('./');
+              }}
+              className="story-btn story-btn-paper text-base px-5 py-2.5"
+            >
+              🔒 Kunci Halaman Guru
+            </button>
+          </div>
 
           <div
             role="status"

@@ -28,15 +28,38 @@ describe('readRoomFromLocation', () => {
 describe('Aplikasi HAKIKU hybrid', () => {
   beforeEach(() => window.localStorage.clear());
 
-  it('menampilkan halaman guru dengan 5 tantangan dan kode tersembunyi', async () => {
+  it('halaman guru terkunci PIN: PIN salah ditolak, PIN benar membuka daftar tantangan', async () => {
     goTo('?guru=1');
+    window.sessionStorage.clear();
     const user = userEvent.setup();
     render(<App loader={loader} />);
+    expect(await screen.findByRole('heading', { name: 'Khusus Guru' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Daftar Tantangan HAKIKU' })).not.toBeInTheDocument();
+
+    for (const d of '1111') await user.click(screen.getByRole('button', { name: d }));
+    expect(screen.getByRole('alert')).toHaveTextContent(/PIN salah/);
+    expect(screen.queryByRole('heading', { name: 'Daftar Tantangan HAKIKU' })).not.toBeInTheDocument();
+
+    for (const d of '8264') await user.click(screen.getByRole('button', { name: d }));
     expect(await screen.findByRole('heading', { name: 'Daftar Tantangan HAKIKU' })).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /Buka/ })).toHaveLength(5);
     expect(screen.queryByText('274')).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Tampilkan kode pintu' }));
     expect(screen.getByText('274')).toBeInTheDocument();
+    window.sessionStorage.clear();
+  });
+
+  it('PIN salah 3 kali mengunci tombol angka sementara', async () => {
+    goTo('?guru=1');
+    window.sessionStorage.clear();
+    const user = userEvent.setup();
+    render(<App loader={loader} />);
+    await screen.findByRole('heading', { name: 'Khusus Guru' });
+    for (let i = 0; i < 3; i += 1) {
+      for (const d of '0000') await user.click(screen.getByRole('button', { name: d }));
+    }
+    expect(screen.getByRole('alert')).toHaveTextContent(/Terkunci/);
+    expect(screen.getByRole('button', { name: '5' })).toBeDisabled();
   });
 
   it('Ruang 1: jawaban salah memberi petunjuk, semua benar memunculkan kode pintu', async () => {

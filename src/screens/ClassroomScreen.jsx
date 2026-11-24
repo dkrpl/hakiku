@@ -5,6 +5,20 @@ import { HakikuCrest } from '../components/illustrations/StoryArt';
 import { ChallengeScreen } from './ChallengeScreen';
 import { CheckCircleIcon, CloseIcon, VolumeOffIcon, VolumeOnIcon } from '../components/icons/StoryIcons';
 import { HOTSPOTS, PAGE_COUNT, SLIDE_H, SLIDE_W } from '../data/canvaHotspots';
+import { adventureAudio, soundForPage } from '../utils/adventureAudio';
+import { AdventureFx } from '../components/AdventureFx';
+import { Confetti } from '../components/GameFx';
+import { TeacherPinDialog, isTeacherUnlocked } from '../components/TeacherGate';
+
+const MUSIC_KEY = 'hakiku-hybrid:musik';
+
+function readMusicOn() {
+  try {
+    return window.localStorage.getItem(MUSIC_KEY) !== '0';
+  } catch {
+    return true;
+  }
+}
 
 const PROGRESS_KEY = 'hakiku-hybrid:kelas-selesai';
 const PAGE_KEY = 'hakiku-hybrid:kelas-halaman';
@@ -100,7 +114,36 @@ export function ClassroomScreen({ content, onPlaySound, muted, onToggleSound }) 
   const [full, setFull] = useState(isFullscreen);
   const [page, setPage] = useState(readPage);
   const [notice, setNotice] = useState('');
+  const [musicOn, setMusicOn] = useState(readMusicOn);
+  const [burst, setBurst] = useState(0);
+  const [askPin, setAskPin] = useState(false);
+  const [teacher] = useState(isTeacherUnlocked);
   const slide = useSlideSize();
+
+  // Musik latar & efek mengikuti tombol suara / musik.
+  useEffect(() => {
+    adventureAudio.setSfxOn(!muted);
+    adventureAudio.setMusicOn(musicOn && !muted);
+  }, [muted, musicOn]);
+
+  // Musik lebih bersemangat saat tantangan dibuka.
+  useEffect(() => {
+    adventureAudio.setMood(activeRoom ? 'challenge' : 'explore');
+  }, [activeRoom]);
+
+  useEffect(() => () => adventureAudio.stop(), []);
+
+  function toggleMusic() {
+    setMusicOn((prev) => {
+      const next = !prev;
+      try {
+        window.localStorage.setItem(MUSIC_KEY, next ? '1' : '0');
+      } catch {
+        // abaikan
+      }
+      return next;
+    });
+  }
 
   useEffect(() => {
     const onChange = () => setFull(isFullscreen());
@@ -120,6 +163,9 @@ export function ClassroomScreen({ content, onPlaySound, muted, onToggleSound }) 
     const target = Math.min(PAGE_COUNT, Math.max(1, n));
     setPage(target);
     savePage(target);
+    const fx = soundForPage(target);
+    adventureAudio.sfx(fx);
+    if (fx === 'door' || fx === 'finale') setBurst((b) => b + 1);
   }, []);
 
   useEffect(() => {
@@ -149,6 +195,8 @@ export function ClassroomScreen({ content, onPlaySound, muted, onToggleSound }) 
       goToPage(1);
     }
     enterFullscreen();
+    adventureAudio.start();
+    adventureAudio.sfx('map');
     setStarted(true);
   }
 
@@ -158,16 +206,15 @@ export function ClassroomScreen({ content, onPlaySound, muted, onToggleSound }) 
       return;
     }
     if (spot.to === page) {
-      onPlaySound('wrong');
+      adventureAudio.sfx('locked');
       setNotice('🔒 Ruang ini masih terkunci. Selesaikan ruang sebelumnya dulu ya!');
       return;
     }
-    onPlaySound('click');
     goToPage(spot.to);
   }
 
   function openChallenge(n) {
-    onPlaySound('click');
+    adventureAudio.sfx('challenge');
     setActiveRoom(n);
   }
 
@@ -198,7 +245,7 @@ export function ClassroomScreen({ content, onPlaySound, muted, onToggleSound }) 
             <>
               <div className="flex flex-col sm:flex-row justify-center gap-3">
                 <button type="button" onClick={() => start(page === 1 && done.length === 0)} className="story-btn story-btn-gold text-xl sm:text-2xl px-8 py-4">
-                  ▶ {page > 1 || done.length > 0 ? `Lanjutkan (Slide ${page})` : 'Mulai Petualangan'}
+                  ▶ {page > 1 ? `Lanjutkan (Slide ${page})` : done.length > 0 ? 'Lanjutkan Petualangan' : 'Mulai Petualangan'}
                 </button>
                 {(page > 1 || done.length > 0) && (
                   <button type="button" onClick={() => start(true)} className="story-btn story-btn-paper text-lg px-6 py-4">
@@ -216,10 +263,21 @@ export function ClassroomScreen({ content, onPlaySound, muted, onToggleSound }) 
             </p>
           )}
 
-          <a href="?guru=1" className="inline-block text-sm font-extrabold text-sky underline">
-            Halaman guru (daftar tantangan &amp; kode pintu)
-          </a>
+          <button
+            type="button"
+            onClick={() => (teacher ? window.location.assign('?guru=1') : setAskPin(true))}
+            className="inline-flex items-center gap-1 text-xs font-extrabold text-ink-muted bg-transparent border-0 cursor-pointer opacity-70 hover:opacity-100"
+          >
+            🔒 Guru
+          </button>
         </div>
+        {askPin && (
+          <TeacherPinDialog
+            pin={content.settings.teacherPin}
+            onSuccess={() => window.location.assign('?guru=1')}
+            onCancel={() => setAskPin(false)}
+          />
+        )}
       </section>
     );
   }
@@ -239,6 +297,8 @@ export function ClassroomScreen({ content, onPlaySound, muted, onToggleSound }) 
           style={{ width: `${slide.width}px`, height: `${slide.height + 2 * FRAME_GAP}px`, top: `-${FRAME_GAP}px` }}
           referrerPolicy="strict-origin-when-cross-origin"
         />
+        <div key={`turn-${page}`} className="page-turn" aria-hidden="true" />
+        <AdventureFx />
         {/* Lapisan penangkap ketukan: hanya kotak tombol yang aktif. */}
         <div className="absolute inset-0 z-10" aria-label={`Slide ${page} dari ${PAGE_COUNT}`} role="group">
           {(HOTSPOTS[page] || []).map((spot, i) => (
@@ -269,12 +329,23 @@ export function ClassroomScreen({ content, onPlaySound, muted, onToggleSound }) 
           type="button"
           onClick={onToggleSound}
           aria-pressed={!muted}
-          aria-label={muted ? 'Nyalakan suara' : 'Matikan suara'}
+          aria-label={muted ? 'Nyalakan semua suara' : 'Matikan semua suara'}
           className="story-btn story-btn-paper px-2.5"
         >
           {muted ? <VolumeOffIcon className="w-5 h-5" /> : <VolumeOnIcon className="w-5 h-5" />}
         </button>
+        <button
+          type="button"
+          onClick={toggleMusic}
+          aria-pressed={musicOn}
+          aria-label={musicOn ? 'Matikan musik latar' : 'Nyalakan musik latar'}
+          className={`story-btn story-btn-paper px-2.5 ${musicOn ? '' : 'line-through opacity-70'}`}
+        >
+          🎵
+        </button>
       </div>
+
+      <Confetti burstKey={burst} pieces={42} />
 
       {notice && (
         <div role="status" className="fixed bottom-6 inset-x-0 z-30 flex justify-center px-4 pointer-events-none">
@@ -285,7 +356,8 @@ export function ClassroomScreen({ content, onPlaySound, muted, onToggleSound }) 
       {activeRoom && (
         <div role="dialog" aria-modal="true" aria-label={`Tantangan Ruang ${activeRoom}`} className="fixed inset-0 z-40 overflow-y-auto">
           <div className="fixed top-0 inset-x-0 z-50 px-3 py-2 bg-parchment/95 border-b-[3px] border-ink flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5 overflow-x-auto" aria-label="Pilih ruang">
+            {teacher ? (
+            <div className="flex items-center gap-1.5 overflow-x-auto" aria-label="Pilih ruang (guru)">
               {ROOM_NUMBERS.map((n) => (
                 <button
                   key={n}
@@ -300,6 +372,9 @@ export function ClassroomScreen({ content, onPlaySound, muted, onToggleSound }) 
                 </button>
               ))}
             </div>
+            ) : (
+              <span className="font-display font-extrabold text-ink px-2">Tantangan Ruang {activeRoom}</span>
+            )}
             <button type="button" onClick={closeChallenge} className="story-btn story-btn-paper px-3 text-sm shrink-0">
               <CloseIcon className="w-5 h-5" />
               <span>Kembali ke Canva</span>

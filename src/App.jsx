@@ -7,6 +7,7 @@ import { TopBar } from './components/TopBar';
 import { HomeScreen } from './screens/HomeScreen';
 import { ChallengeScreen } from './screens/ChallengeScreen';
 import { ClassroomScreen } from './screens/ClassroomScreen';
+import { TeacherPinDialog, isTeacherUnlocked } from './components/TeacherGate';
 import { HakikuCrest } from './components/illustrations/StoryArt';
 
 const MUTE_KEY = 'hakiku-hybrid:muted';
@@ -36,6 +37,7 @@ export default function App({ loader = loadContent }) {
   const [roomNumber] = useState(() => readRoomFromLocation());
   const [teacherMode] = useState(() => readTeacherMode());
   const classroomMode = !roomNumber && !teacherMode;
+  const [teacherOk, setTeacherOk] = useState(isTeacherUnlocked);
   const [muted, setMuted] = useState(readMuted);
   const [loadInfo, setLoadInfo] = useState({ status: 'loading', content: null, source: '', warnings: [], error: '' });
 
@@ -108,8 +110,17 @@ export default function App({ loader = loadContent }) {
               settings={loadInfo.content.settings}
               onPlaySound={playSound}
             />
-          ) : (
+          ) : teacherOk ? (
             <HomeScreen content={loadInfo.content} loadInfo={loadInfo} onPlaySound={playSound} />
+          ) : (
+            <div className="min-h-dvh flex items-center justify-center p-4 pt-20">
+              <TeacherPinDialog
+                asPage
+                pin={loadInfo.content.settings.teacherPin}
+                onSuccess={() => setTeacherOk(true)}
+                onCancel={() => window.location.assign('./')}
+              />
+            </div>
           )}
         </main>
       </div>

@@ -106,6 +106,10 @@ export function buildContentFromSheets(tabs) {
     const value = String(row.nilai ?? '').trim();
     if (key === 'link_blooket' && value) content.settings.blooketUrl = value;
     if (key === 'link_canva' && /^https?:\/\//i.test(value)) content.settings.canvaUrl = value;
+    if (key === 'pin_guru' && value !== '') {
+      if (/^\d{4,8}$/.test(value)) content.settings.teacherPin = value;
+      else warnings.push(`Pengaturan "pin_guru" harus 4-8 angka (tertulis "${value}"). Dipakai PIN bawaan.`);
+    }
     if (key === 'detik_kembali' && value !== '') {
       const secs = Number.parseInt(value, 10);
       if (Number.isFinite(secs) && secs >= 0 && secs <= 120) content.settings.returnSeconds = secs;
