@@ -16,21 +16,22 @@ Tanpa pengaturan ini, slide Canva tidak bisa tampil di dalam web.
 
 ## Alur di kelas (Mode Kelas)
 
-1. Buka `https://hakiku-xmma.vercel.app` di laptop yang tersambung ke smartboard, lalu tekan **▶ Mulai Petualangan**. Layar menjadi penuh dan Canva tampil.
+1. Buka `https://hakiku-xmma.vercel.app` di laptop yang tersambung ke smartboard, lalu tekan **▶ Mulai Petualangan**. Layar menjadi penuh dan slide Canva tampil memenuhi layar.
    Bila layar penuh terlepas, ketuk tombol **⛶ Layar Penuh** di kiri atas.
-2. Tekan **Mulai** di slide, baca petunjuk bersama siswa, lalu masuk ke Ruang 1 dari peta.
-3. Setelah materi, di slide Tantangan siswa mengetuk tombol emas **🎮 Tantangan Ruang N** di **kanan atas**. Tombol ini selalu menunjuk ruang berikutnya yang belum selesai. Tantangan muncul di atas Canva, tidak pindah tab.
-4. Siswa mengerjakan tantangan langsung di smartboard. Kartu bisa digeser dengan jari, atau diketuk lalu pilih kotaknya.
-5. Siswa mendapat bintang (1–3, tergantung jumlah kesalahan), lalu **mengetuk gembok emas 3 kali** sampai terbuka. Angka kode pintu berputar lalu berhenti.
-   Setelah hitung mundur (bawaan 15 detik) jendela tantangan tertutup sendiri dan **Canva terlihat lagi di slide yang sama**. Siswa boleh menekan **Kembali ke Canva Sekarang**, atau **Tunggu, Aku Belum Hafal** untuk menjeda.
-6. Di Canva, siswa menekan **Sudah Dapat Kode**, lalu memilih kode yang benar di slide Pintu. Pintu terbuka dan ruangan berikutnya tidak lagi bergembok.
-7. Di Ruang 5, setelah kuis, tekan **Mulai Misi Blooket** (Blooket terbuka di tab baru). Setelah permainan selesai, kembali ke tab HAKIKU, tekan **⛶ Layar Penuh**, lalu tekan **Misi Blooket Selesai** untuk mendapat kode terakhir.
+2. Siswa cukup mengetuk tombol di slide. **Seluruh kotak tombol** bisa diketuk, tidak harus tepat di tulisannya. Ketukan di luar tombol diabaikan, jadi slide tidak berpindah tanpa sengaja.
+3. Ruang yang masih bergembok di peta tidak bisa dibuka (muncul pesan "masih terkunci").
+4. Setelah materi, siswa mengetuk **Mulai Tantangan** di slide. Tantangan muncul di atas Canva, tidak pindah tab.
+5. Siswa mengerjakan tantangan. Kartu bisa digeser dengan jari, atau diketuk lalu pilih kotaknya.
+6. Siswa mendapat bintang (1–3), lalu **mengetuk gembok emas 3 kali**. Kode pintu muncul. Setelah hitung mundur (bawaan 15 detik) jendela tantangan tertutup sendiri dan slide Canva terlihat lagi.
+7. Siswa mengetuk **Sudah Dapat Kode**, lalu memilih kode yang benar di slide Pintu.
+8. Di Ruang 5, setelah kuis, tekan **Mulai Misi Blooket** (Blooket terbuka di tab baru). Setelah selesai, kembali ke tab HAKIKU, tekan **⛶ Layar Penuh**, lalu **Misi Blooket Selesai**.
 
 Catatan guru:
+- Guru bisa pindah slide dengan **panah kiri/kanan** di keyboard atau clicker presentasi.
 - Di bagian atas jendela tantangan ada tombol ruang **1–5** untuk membuka ulang ruang mana saja.
-- Bila halaman dimuat ulang, tekan **Lanjutkan** untuk meneruskan dari ruang terakhir, atau **Mulai dari Awal**.
+- Bila halaman dimuat ulang, tekan **Lanjutkan** untuk meneruskan dari slide terakhir, atau **Mulai dari Awal**.
 - Halaman guru (daftar tantangan, status Google Sheets, kode pintu): `https://hakiku-xmma.vercel.app/?guru=1`.
-- Link per ruang (`?ruang=1` sampai `?ruang=5`) tetap bisa dibuka terpisah bila diperlukan.
+- Letak tombol tiap slide tercatat di `src/data/canvaHotspots.js`. Bila tombol di Canva dipindah atau ditambah, angka di file itu perlu disesuaikan.
 
 ## Mengubah isi tantangan (Google Sheets)
 

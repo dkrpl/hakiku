@@ -100,7 +100,7 @@ describe('Aplikasi HAKIKU hybrid', () => {
     expect(within(document.body).getByText('Soal 1 dari 1')).toBeInTheDocument();
   });
 
-  it('Mode Kelas: Canva tampil di dalam web dan tantangan terbuka di atasnya tanpa pindah tab', async () => {
+  it('Mode Kelas: seluruh tombol slide bisa diketuk dan tantangan terbuka di atas Canva', async () => {
     goTo('');
     window.sessionStorage.clear();
     const user = userEvent.setup();
@@ -108,10 +108,26 @@ describe('Aplikasi HAKIKU hybrid', () => {
 
     await user.click(await screen.findByRole('button', { name: /Mulai Petualangan/ }));
     const frame = screen.getByTitle('Slide HAKIKU di Canva');
-    expect(frame).toHaveAttribute('src', 'https://www.canva.com/design/DAHbv4LhBzI/C8xeXMSqxpSoeNVRyl8eNw/view?embed');
+    expect(frame).toHaveAttribute('src', 'https://www.canva.com/design/DAHbv4LhBzI/C8xeXMSqxpSoeNVRyl8eNw/view?embed#1');
     expect(frame).not.toHaveAttribute('allowfullscreen');
 
-    await user.click(screen.getByRole('button', { name: /Tantangan Ruang 1/ }));
+    // Slide 1: tombol Mulai → slide 2 → Ke Peta → slide 3 (peta)
+    await user.click(screen.getByRole('button', { name: 'Buka slide 2' }));
+    expect(frame.getAttribute('src')).toMatch(/#2$/);
+    await user.click(screen.getByRole('button', { name: 'Buka slide 3' }));
+    expect(frame.getAttribute('src')).toMatch(/#3$/);
+
+    // Ruang yang masih terkunci tidak berpindah slide
+    const locked = screen.getAllByRole('button', { name: 'Buka slide 3' });
+    await user.click(locked[0]);
+    expect(frame.getAttribute('src')).toMatch(/#3$/);
+    expect(screen.getByRole('status')).toHaveTextContent(/masih terkunci/);
+
+    // Guru bisa pindah slide dengan panah
+    await user.keyboard('{ArrowRight}{ArrowRight}{ArrowRight}');
+    expect(frame.getAttribute('src')).toMatch(/#6$/);
+
+    await user.click(screen.getByRole('button', { name: 'Mulai Tantangan Ruang 1' }));
     expect(screen.getByRole('dialog', { name: 'Tantangan Ruang 1' })).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /Mendapat penjelasan pelajaran/ }));
@@ -121,23 +137,22 @@ describe('Aplikasi HAKIKU hybrid', () => {
     await user.click(screen.getByRole('button', { name: /secara seimbang/ }));
     await openPadlock(user);
     await screen.findByRole('heading', { name: 'Kode Pintu Ruang 1' }, { timeout: 3000 });
-    expect(screen.getByText(/Setelah kembali ke Canva/)).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Kembali ke Canva Sekarang' }));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    // Canva tetap terpasang (slide tidak kembali ke awal) dan tombol pindah ke ruang berikutnya.
     expect(screen.getByTitle('Slide HAKIKU di Canva')).toBe(frame);
-    expect(screen.getByRole('button', { name: /Tantangan Ruang 2/ })).toBeInTheDocument();
+    expect(frame.getAttribute('src')).toMatch(/#6$/);
     expect(JSON.parse(window.sessionStorage.getItem('hakiku-hybrid:kelas-selesai'))).toEqual([1]);
   });
 
-  it('Mode Kelas: melanjutkan dari ruang terakhir bila halaman dimuat ulang', async () => {
+  it('Mode Kelas: melanjutkan dari slide terakhir bila halaman dimuat ulang', async () => {
     goTo('');
-    window.sessionStorage.setItem('hakiku-hybrid:kelas-selesai', '[1,2]');
+    window.sessionStorage.setItem('hakiku-hybrid:kelas-halaman', '12');
     const user = userEvent.setup();
     render(<App loader={loader} />);
-    await user.click(await screen.findByRole('button', { name: /Lanjutkan \(Ruang 3\)/ }));
-    expect(screen.getByRole('button', { name: /Tantangan Ruang 3/ })).toBeInTheDocument();
+    await user.click(await screen.findByRole('button', { name: /Lanjutkan \(Slide 12\)/ }));
+    expect(screen.getByTitle('Slide HAKIKU di Canva').getAttribute('src')).toMatch(/#12$/);
+    expect(screen.getByRole('button', { name: 'Mulai Tantangan Ruang 2' })).toBeInTheDocument();
     window.sessionStorage.clear();
   });
 
@@ -145,5 +160,14 @@ describe('Aplikasi HAKIKU hybrid', () => {
     goTo('?ruang=2');
     render(<App loader={() => Promise.reject(new Error('rusak'))} />);
     expect(await screen.findByRole('heading', { name: 'Mengenal Hak' })).toBeInTheDocument();
+  });
+});
+
+describe('computeSlideSize', () => {
+  it('slide 16:9 sebesar mungkin di layar', async () => {
+    const { computeSlideSize } = await import('./screens/ClassroomScreen');
+    expect(computeSlideSize(1920, 1080)).toEqual({ width: 1920, height: 1080 });
+    expect(computeSlideSize(1920, 1200)).toEqual({ width: 1920, height: 1080 });
+    expect(computeSlideSize(1366, 700)).toEqual({ width: 1244, height: 700 });
   });
 });
