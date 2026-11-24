@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 import { parseCsv, csvToObjects } from './csv';
-import { buildContentFromSheets, buildSheetCsvUrl, loadContent } from './contentLoader';
+import { buildCanvaReturnUrl, buildContentFromSheets, buildSheetCsvUrl, loadContent } from './contentLoader';
 
 describe('parseCsv', () => {
   it('membaca sel berkutip yang berisi koma, kutip ganda, dan baris baru', () => {
@@ -136,7 +136,19 @@ describe('loadContent', () => {
 
     const bad = buildContentFromSheets({ settings: [{ kunci: 'detik_kembali', nilai: 'lama' }, { kunci: 'link_canva', nilai: 'bukan link' }] });
     expect(bad.content.settings.returnSeconds).toBe(15);
-    expect(bad.content.settings.canvaUrl).toBe('');
+    expect(bad.content.settings.canvaUrl).toMatch(/^https:\/\/www\.canva\.com\//);
     expect(bad.warnings.join(' ')).toMatch(/detik_kembali/);
+  });
+
+  it('membuat link kembali ke slide pintu Canva untuk tiap ruang', () => {
+    const { settings, rooms } = buildContentFromSheets({}).content;
+    const url = new URL(buildCanvaReturnUrl(settings, rooms[1]));
+    expect(url.pathname).toMatch(/\/view$/);
+    const decoded = JSON.parse(atob(url.searchParams.get('ui').replace(/-/g, '+').replace(/_/g, '/')));
+    expect(decoded).toEqual({ D: { T: { A: rooms[1].canvaDoorPageId } } });
+
+    expect(buildCanvaReturnUrl({ canvaUrl: '' }, rooms[1])).toBe('');
+    const custom = buildContentFromSheets({ rooms: [{ ruang: '2', link_kembali: 'https://canva.link/abc' }] });
+    expect(buildCanvaReturnUrl(custom.content.settings, custom.content.rooms[2])).toBe('https://canva.link/abc');
   });
 });

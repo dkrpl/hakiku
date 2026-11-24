@@ -123,6 +123,11 @@ export function buildContentFromSheets(tabs) {
     else if (type) warnings.push(`Ruang ${n}: jenis "${row.jenis}" tidak dikenal (pakai "kuis" atau "sortir").`);
     if (row.petunjuk) room.instruction = row.petunjuk;
     if (row.kode_pintu) room.doorCode = cleanCode(row.kode_pintu);
+    const back = String(row.link_kembali ?? '').trim();
+    if (back) {
+      if (/^https?:\/\//i.test(back)) room.canvaReturnUrl = back;
+      else warnings.push(`Ruang ${n}: link_kembali harus diawali https:// (tertulis "${back}"). Dipakai link bawaan.`);
+    }
     if (row.kotak_kiri) room.leftLabel = row.kotak_kiri;
     if (row.kotak_kanan) room.rightLabel = row.kotak_kanan;
     if (row.tombol_blooket !== undefined && row.tombol_blooket !== '') room.showBlooket = isYes(row.tombol_blooket);
@@ -233,4 +238,18 @@ export async function loadContent({ fetchImpl = globalThis.fetch, sheetId = reso
   } finally {
     if (timer) clearTimeout(timer);
   }
+}
+
+// Membuat link kembali ke Canva yang langsung membuka slide pintu ruangan.
+// Canva membaca parameter ?ui= berisi id halaman (JSON base64url).
+export function buildCanvaReturnUrl(settings, room) {
+  if (room?.canvaReturnUrl) return room.canvaReturnUrl;
+  const base = String(settings?.canvaUrl ?? '').trim();
+  if (!base) return '';
+  if (!room?.canvaDoorPageId || /[?&]ui=/.test(base)) return base;
+  const json = JSON.stringify({ D: { T: { A: room.canvaDoorPageId } } });
+  const b64 = btoa(unescape(encodeURIComponent(json))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const url = new URL(base);
+  url.searchParams.set('ui', b64);
+  return url.toString();
 }

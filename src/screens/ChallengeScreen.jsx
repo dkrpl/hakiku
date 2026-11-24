@@ -6,6 +6,7 @@ import { BlooketMission } from '../challenges/BlooketMission';
 import { DoorCodePanel } from '../challenges/DoorCodePanel';
 import { UnlockGate } from '../challenges/UnlockGate';
 import { starsFromMistakes } from '../components/GameFx';
+import { buildCanvaReturnUrl } from '../data/contentLoader';
 import { KeyIcon } from '../components/icons/StoryIcons';
 
 export function ChallengeScreen({ room, settings, onPlaySound }) {
@@ -96,7 +97,7 @@ export function ChallengeScreen({ room, settings, onPlaySound }) {
               doorCode={room.doorCode}
               isFinal={room.number === 5}
               stars={stars}
-              returnUrl={settings.canvaUrl}
+              returnUrl={buildCanvaReturnUrl(settings, room)}
               returnSeconds={settings.returnSeconds}
               onRestart={handleRestart}
             />

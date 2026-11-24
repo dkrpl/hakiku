@@ -16,9 +16,9 @@ Semua isi tantangan diatur dari **Google Sheets "HAKIKU - Database"**, tanpa cod
 3. Setelah materi, tekan **Mulai Tantangan**. Web terbuka di tab baru.
 4. Siswa mengerjakan tantangan langsung di smartboard. Kartu bisa digeser dengan jari, atau diketuk lalu pilih kotaknya.
 5. Siswa mendapat bintang (1–3, tergantung jumlah kesalahan), lalu **mengetuk gembok emas 3 kali** sampai terbuka. Angka kode pintu berputar lalu berhenti.
-   Setelah hitung mundur (bawaan 15 detik) web **kembali ke Canva sendiri**: tab web tertutup dan slide Canva terlihat lagi. Siswa boleh menekan **Kembali ke Canva Sekarang**, atau **Tunggu, Aku Belum Hafal** untuk menjeda.
-   Bila browser sekolah menolak menutup tab otomatis, layar menampilkan kode besar dan petunjuk menekan ✕ pada tab.
-6. Di Canva, tekan **Sudah dapat kode**, lalu siswa memilih kode yang benar. Pintu terbuka dan ruangan berikutnya tidak lagi bergembok.
+   Setelah hitung mundur (bawaan 15 detik) web **pindah sendiri ke Canva, tepat di slide Pintu ruangan itu**. Siswa tinggal memilih kode yang benar. Siswa boleh menekan **Kembali ke Canva Sekarang**, atau **Tunggu, Aku Belum Hafal** untuk menjeda.
+   Penting: buka Canva di browser yang sudah login ke akun Canva pemilik desain (link kembali memakai mode **Lihat** desain ini).
+6. Di slide Pintu, siswa memilih kode yang benar. (Tombol **Sudah dapat kode** di slide tantangan tetap ada sebagai jalan cadangan.) Pintu terbuka dan ruangan berikutnya tidak lagi bergembok.
 7. Di Ruang 5, setelah kuis, tekan **Mulai Misi Blooket**. Setelah permainan selesai, kembali ke tab web lalu tekan **Misi Blooket Selesai** untuk mendapat kode terakhir.
 
 ## Mengubah isi tantangan (Google Sheets)
@@ -30,7 +30,7 @@ Buka Google Sheets **HAKIKU - Database**. Setiap perubahan langsung terpakai: cu
 | Link Blooket | **Pengaturan** | kolom `nilai` pada baris `link_blooket` |
 | Judul, petunjuk, kode pintu | **Ruang** | baris ruang yang dimaksud |
 | Lama hitung mundur kembali ke Canva | **Pengaturan** | `detik_kembali` (0 = tidak otomatis) |
-| Link tujuan setelah kode muncul (opsional) | **Pengaturan** | `link_canva` (kosong = tab web ditutup) |
+| Link Canva tujuan setelah kode muncul | **Pengaturan** | `link_canva` (sudah terisi link presentasi HAKIKU; kosong = tab web ditutup saja) |
 | Soal pilihan ganda | **Kuis** | satu baris = satu soal. `jawaban` diisi a / b / c / d |
 | Kartu sortir | **Kartu** | satu baris = satu kartu. `kotak` diisi kiri / kanan |
 | Jenis tantangan | **Ruang** | kolom `jenis`: `kuis` atau `sortir` |

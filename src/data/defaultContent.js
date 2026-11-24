@@ -16,9 +16,10 @@ export const ROOM_NUMBERS = [1, 2, 3, 4, 5];
 
 export const DEFAULT_SETTINGS = {
   blooketUrl: 'https://play.blooket.com/play',
-  // Kosong = tab tantangan ditutup otomatis agar slide Canva terlihat lagi.
-  // Isi dengan link Canva (mis. link "Lihat" presentasi) bila ingin dialihkan ke sana.
-  canvaUrl: '',
+  // Link presentasi Canva (mode "Lihat"). Setelah kode muncul, web pindah ke link ini
+  // tepat di slide pintu ruangan (memakai id halaman pintu di tiap ruang).
+  // Kosongkan bila ingin tab tantangan ditutup saja.
+  canvaUrl: 'https://www.canva.com/design/DAHbv4LhBzI/C8xeXMSqxpSoeNVRyl8eNw/view',
   // Lama hitung mundur sebelum kembali ke Canva (detik). 0 = tidak otomatis.
   returnSeconds: 15,
 };
@@ -31,6 +32,9 @@ export const DEFAULT_ROOMS = {
     instruction:
       'Jawab semua soal dengan benar untuk mendapatkan kode pintu Ruang 1. Kalau salah, baca petunjuknya lalu coba lagi!',
     doorCode: '274',
+    // id halaman "Pintu" di Canva (untuk kembali langsung ke slide pintu)
+    canvaDoorPageId: 'PBpRd0nXtkC7jkp8',
+    canvaReturnUrl: '',
     leftLabel: 'Hak',
     rightLabel: 'Kewajiban',
     showBlooket: false,
@@ -84,6 +88,9 @@ export const DEFAULT_ROOMS = {
     instruction:
       'Pilah semua kartu ke kotak yang benar. Seret kartunya, atau ketuk kartu lalu ketuk kotaknya.',
     doorCode: '381',
+    // id halaman "Pintu" di Canva (untuk kembali langsung ke slide pintu)
+    canvaDoorPageId: 'PBrR0mDsFJmwG3DJ',
+    canvaReturnUrl: '',
     leftLabel: 'Hak',
     rightLabel: 'Kewajiban',
     showBlooket: false,
@@ -146,6 +153,9 @@ export const DEFAULT_ROOMS = {
     instruction:
       'Kewajiban ada di mana-mana! Pilah kartu ke kotak Kewajiban di Rumah atau Kewajiban di Sekolah.',
     doorCode: '539',
+    // id halaman "Pintu" di Canva (untuk kembali langsung ke slide pintu)
+    canvaDoorPageId: 'PBbQ3Vw7MWC3FbfC',
+    canvaReturnUrl: '',
     leftLabel: 'Kewajiban di Rumah',
     rightLabel: 'Kewajiban di Sekolah',
     showBlooket: false,
@@ -208,6 +218,9 @@ export const DEFAULT_ROOMS = {
     instruction:
       'Baca cerita pendek di setiap soal, lalu pilih sikap yang menunjukkan hak dan kewajiban yang seimbang.',
     doorCode: '642',
+    // id halaman "Pintu" di Canva (untuk kembali langsung ke slide pintu)
+    canvaDoorPageId: 'PBtJJZyYfysqdrXg',
+    canvaReturnUrl: '',
     leftLabel: 'Hak',
     rightLabel: 'Kewajiban',
     showBlooket: false,
@@ -261,6 +274,9 @@ export const DEFAULT_ROOMS = {
     instruction:
       'Selesaikan kuis terakhir, lalu ikuti Misi Blooket bersama teman sekelas untuk mendapatkan kode pintu terakhir.',
     doorCode: '725',
+    // id halaman "Pintu" di Canva (untuk kembali langsung ke slide pintu)
+    canvaDoorPageId: 'PBxT7Kh1Lkpsd2pf',
+    canvaReturnUrl: '',
     leftLabel: 'Hak',
     rightLabel: 'Kewajiban',
     showBlooket: true,

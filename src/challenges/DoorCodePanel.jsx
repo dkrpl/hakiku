@@ -128,8 +128,17 @@ export function DoorCodePanel({
         </div>
 
         <p className="story-body font-bold text-ink m-0">
-          Hafalkan kodenya! Di Canva, tekan <strong>Sudah Dapat Kode</strong>, lalu pilih angka <strong>{doorCode}</strong> di{' '}
-          <strong>{doorName}</strong>.
+          {returnUrl ? (
+            <>
+              Hafalkan kodenya! Sebentar lagi kamu kembali ke Canva di <strong>{doorName}</strong>. Pilih angka{' '}
+              <strong>{doorCode}</strong> di sana.
+            </>
+          ) : (
+            <>
+              Hafalkan kodenya! Di Canva, tekan <strong>Sudah Dapat Kode</strong>, lalu pilih angka <strong>{doorCode}</strong> di{' '}
+              <strong>{doorName}</strong>.
+            </>
+          )}
         </p>
 
         {!rolling && returnSeconds > 0 && !leaving && (
@@ -145,6 +154,10 @@ export function DoorCodePanel({
               {paused ? 'Hitung mundur dijeda. Tekan Lanjutkan bila sudah hafal.' : `Kembali ke Canva otomatis dalam ${secondsLeft} detik…`}
             </p>
           </div>
+        )}
+
+        {leaving && returnUrl && (
+          <p role="status" className="text-base font-extrabold text-meadow m-0">Membuka Canva… tunggu sebentar ya.</p>
         )}
 
         <div className="flex flex-col sm:flex-row justify-center gap-3">
