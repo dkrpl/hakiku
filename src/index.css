@@ -359,3 +359,118 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ===== Efek permainan (versi interaktif) ===== */
+@layer components {
+  .confetti-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 40;
+  }
+  .confetti-piece {
+    position: absolute;
+    top: -20px;
+    border-radius: 2px;
+    animation-name: confetti-fall;
+    animation-timing-function: cubic-bezier(0.25, 0.6, 0.4, 1);
+    animation-fill-mode: forwards;
+  }
+  .speech-bubble {
+    position: relative;
+    border-radius: 18px;
+    padding: 10px 14px;
+    box-shadow: 0 3px 0 var(--color-ink);
+    max-width: 34rem;
+  }
+  .countdown-ring {
+    --pct: 1;
+    width: 56px;
+    height: 56px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: conic-gradient(var(--color-meadow) calc(var(--pct) * 360deg), var(--color-locked-bg) 0);
+    border: 3px solid var(--color-ink);
+    flex-shrink: 0;
+  }
+  .countdown-ring > span {
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    background: var(--color-parchment);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.25rem;
+  }
+  .unlock-pad {
+    background: radial-gradient(circle, rgba(242, 183, 5, 0.25), transparent 70%);
+  }
+  .padlock-shackle-open {
+    animation: shackle-open 0.6s ease-out forwards;
+  }
+  .close-tab-arrow {
+    font-size: 4rem;
+    color: var(--color-gold);
+    line-height: 1;
+    animation: arrow-bounce 0.9s ease-in-out infinite;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@keyframes confetti-fall {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate3d(var(--drift), 105vh, 0) rotate(var(--spin)); opacity: 0.9; }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-10px); }
+  40% { transform: translateX(9px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(4px); }
+}
+@keyframes hop {
+  0%, 100% { transform: translateY(0); }
+  35% { transform: translateY(-14px) scale(1.06); }
+  60% { transform: translateY(0) scale(0.98); }
+}
+@keyframes bubble-in {
+  0% { transform: scale(0.85); opacity: 0; }
+  70% { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(1); }
+}
+@keyframes star-pop {
+  0% { transform: scale(0) rotate(-30deg); opacity: 0; }
+  70% { transform: scale(1.25) rotate(8deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); }
+}
+@keyframes option-in {
+  0% { transform: translateY(12px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes shackle-open {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(0deg); }
+  100% { transform: translateY(-14px) rotate(-28deg); }
+}
+@keyframes arrow-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+.animate-shake { animation: shake 0.45s ease-in-out; }
+.animate-hop { animation: hop 0.6s ease-out; }
+.animate-bubble-in { animation: bubble-in 0.35s ease-out both; }
+.animate-star-pop { animation: star-pop 0.5s ease-out both; }
+.animate-option-in { animation: option-in 0.35s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti-layer { display: none; }
+  .animate-shake, .animate-hop, .animate-bubble-in, .animate-star-pop, .animate-option-in,
+  .padlock-shackle-open, .close-tab-arrow { animation: none !important; }
+}
