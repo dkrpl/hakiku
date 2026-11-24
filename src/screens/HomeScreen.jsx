@@ -46,9 +46,13 @@ export function HomeScreen({ content, loadInfo, onPlaySound }) {
         <div className="story-panel p-5 sm:p-6 space-y-3">
           <h1 className="story-heading-page font-extrabold m-0">Daftar Tantangan HAKIKU</h1>
           <p className="story-body text-ink m-0">
-            Halaman ini untuk guru. Siswa masuk ke setiap tantangan lewat tombol <strong>Mulai Tantangan</strong> di
-            Canva. Salin link di bawah, lalu tempel ke tombol tersebut di Canva (pilih tombol → Link → tempel).
+            Halaman ini untuk guru. Untuk pembelajaran di kelas, pakai <strong>Mode Kelas</strong>: Canva tampil di
+            dalam web dalam layar penuh, dan siswa membuka tantangan lewat tombol <strong>🎮 Tantangan</strong> tanpa
+            pindah tab. Link per ruang di bawah tetap bisa dipakai bila tantangan ingin dibuka terpisah.
           </p>
+          <a href="./" className="story-btn story-btn-gold self-start inline-flex text-base px-5 py-2.5">
+            ▶ Mode Kelas (layar penuh)
+          </a>
 
           <div
             role="status"

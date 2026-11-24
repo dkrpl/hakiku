@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SCENES } from '../data/defaultContent';
 import { QuizChallenge } from '../challenges/QuizChallenge';
 import { SortChallenge } from '../challenges/SortChallenge';
@@ -9,7 +9,12 @@ import { starsFromMistakes } from '../components/GameFx';
 import { buildCanvaReturnUrl } from '../data/contentLoader';
 import { KeyIcon } from '../components/icons/StoryIcons';
 
-export function ChallengeScreen({ room, settings, onPlaySound }) {
+/**
+ * Satu tantangan ruang.
+ * - Dibuka langsung (?ruang=N): setelah kode muncul, kembali ke Canva lewat link.
+ * - Dibuka di Mode Kelas (embedded): onReturn menutup jendela tantangan sehingga Canva terlihat lagi.
+ */
+export function ChallengeScreen({ room, settings, onPlaySound, embedded = false, onReturn, onCodeShown }) {
   const [stage, setStage] = useState('challenge'); // challenge | blooket | gate | code
   const [attempt, setAttempt] = useState(0);
   const [stars, setStars] = useState(3);
@@ -32,6 +37,10 @@ export function ChallengeScreen({ room, settings, onPlaySound }) {
 
   const handleGateOpened = useCallback(() => setStage('code'), []);
 
+  useEffect(() => {
+    if (stage === 'code') onCodeShown?.(room.number);
+  }, [stage, room.number, onCodeShown]);
+
   function handleRestart() {
     onPlaySound('click');
     setAttempt((n) => n + 1);
@@ -39,7 +48,7 @@ export function ChallengeScreen({ room, settings, onPlaySound }) {
   }
 
   return (
-    <section className="game-stage pt-18 sm:pt-20 pb-6 px-3 sm:px-6 lg:px-8">
+    <section className={`game-stage ${embedded ? 'pt-20' : 'pt-18 sm:pt-20'} pb-6 px-3 sm:px-6 lg:px-8`}>
       <img src={SCENES[room.number]} width="1280" height="720" alt="" className="game-backdrop-img" />
       <div aria-hidden="true" className="fixed inset-0 bg-ink/25 pointer-events-none z-0" />
 
@@ -99,6 +108,7 @@ export function ChallengeScreen({ room, settings, onPlaySound }) {
               stars={stars}
               returnUrl={buildCanvaReturnUrl(settings, room)}
               returnSeconds={settings.returnSeconds}
+              onReturn={onReturn}
               onRestart={handleRestart}
             />
           </div>

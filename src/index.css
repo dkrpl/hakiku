@@ -469,8 +469,29 @@
 .animate-star-pop { animation: star-pop 0.5s ease-out both; }
 .animate-option-in { animation: option-in 0.35s ease-out both; }
 
+/* Mode Kelas: tombol Tantangan yang mengambang di atas Canva */
+@keyframes fab-glow {
+  0%, 100% { box-shadow: 0 5px 0 #14261c, 0 0 0 0 rgba(242, 183, 5, 0.75); }
+  50% { box-shadow: 0 5px 0 #14261c, 0 0 0 14px rgba(242, 183, 5, 0); }
+}
+.challenge-fab {
+  animation: fab-glow 1.8s ease-in-out infinite;
+  border: 3px solid var(--color-ink);
+  font-size: clamp(1.05rem, 1.6vw, 1.5rem);
+  padding: 0.7rem 1.3rem;
+  border-radius: 1.1rem;
+}
+.canva-frame {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #0e1512;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .confetti-layer { display: none; }
   .animate-shake, .animate-hop, .animate-bubble-in, .animate-star-pop, .animate-option-in,
-  .padlock-shackle-open, .close-tab-arrow { animation: none !important; }
+  .padlock-shackle-open, .close-tab-arrow, .challenge-fab { animation: none !important; }
 }

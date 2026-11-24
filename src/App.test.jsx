@@ -29,7 +29,7 @@ describe('Aplikasi HAKIKU hybrid', () => {
   beforeEach(() => window.localStorage.clear());
 
   it('menampilkan halaman guru dengan 5 tantangan dan kode tersembunyi', async () => {
-    goTo('');
+    goTo('?guru=1');
     const user = userEvent.setup();
     render(<App loader={loader} />);
     expect(await screen.findByRole('heading', { name: 'Daftar Tantangan HAKIKU' })).toBeInTheDocument();
@@ -98,6 +98,47 @@ describe('Aplikasi HAKIKU hybrid', () => {
 
     await user.click(screen.getByRole('button', { name: /Ulangi Tantangan/ }));
     expect(within(document.body).getByText('Soal 1 dari 1')).toBeInTheDocument();
+  });
+
+  it('Mode Kelas: Canva tampil di dalam web dan tantangan terbuka di atasnya tanpa pindah tab', async () => {
+    goTo('');
+    window.sessionStorage.clear();
+    const user = userEvent.setup();
+    render(<App loader={loader} />);
+
+    await user.click(await screen.findByRole('button', { name: /Mulai Petualangan/ }));
+    const frame = screen.getByTitle('Slide HAKIKU di Canva');
+    expect(frame).toHaveAttribute('src', 'https://www.canva.com/design/DAHbv4LhBzI/C8xeXMSqxpSoeNVRyl8eNw/view?embed');
+    expect(frame).not.toHaveAttribute('allowfullscreen');
+
+    await user.click(screen.getByRole('button', { name: /Tantangan Ruang 1/ }));
+    expect(screen.getByRole('dialog', { name: 'Tantangan Ruang 1' })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /Mendapat penjelasan pelajaran/ }));
+    await user.click(screen.getByRole('button', { name: /Lanjut ke Soal 2/ }));
+    await user.click(screen.getByRole('button', { name: /Ikut menjaga kebersihan/ }));
+    await user.click(screen.getByRole('button', { name: /Lanjut ke Soal 3/ }));
+    await user.click(screen.getByRole('button', { name: /secara seimbang/ }));
+    await openPadlock(user);
+    await screen.findByRole('heading', { name: 'Kode Pintu Ruang 1' }, { timeout: 3000 });
+    expect(screen.getByText(/Setelah kembali ke Canva/)).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Kembali ke Canva Sekarang' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    // Canva tetap terpasang (slide tidak kembali ke awal) dan tombol pindah ke ruang berikutnya.
+    expect(screen.getByTitle('Slide HAKIKU di Canva')).toBe(frame);
+    expect(screen.getByRole('button', { name: /Tantangan Ruang 2/ })).toBeInTheDocument();
+    expect(JSON.parse(window.sessionStorage.getItem('hakiku-hybrid:kelas-selesai'))).toEqual([1]);
+  });
+
+  it('Mode Kelas: melanjutkan dari ruang terakhir bila halaman dimuat ulang', async () => {
+    goTo('');
+    window.sessionStorage.setItem('hakiku-hybrid:kelas-selesai', '[1,2]');
+    const user = userEvent.setup();
+    render(<App loader={loader} />);
+    await user.click(await screen.findByRole('button', { name: /Lanjutkan \(Ruang 3\)/ }));
+    expect(screen.getByRole('button', { name: /Tantangan Ruang 3/ })).toBeInTheDocument();
+    window.sessionStorage.clear();
   });
 
   it('tetap jalan dengan konten bawaan bila pemuat data gagal total', async () => {

@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 import { parseCsv, csvToObjects } from './csv';
-import { buildCanvaReturnUrl, buildContentFromSheets, buildSheetCsvUrl, loadContent } from './contentLoader';
+import { buildCanvaEmbedUrl, buildCanvaReturnUrl, buildContentFromSheets, buildSheetCsvUrl, loadContent } from './contentLoader';
 
 describe('parseCsv', () => {
   it('membaca sel berkutip yang berisi koma, kutip ganda, dan baris baru', () => {
@@ -150,5 +150,22 @@ describe('loadContent', () => {
     expect(buildCanvaReturnUrl({ canvaUrl: '' }, rooms[1])).toBe('');
     const custom = buildContentFromSheets({ rooms: [{ ruang: '2', link_kembali: 'https://canva.link/abc' }] });
     expect(buildCanvaReturnUrl(custom.content.settings, custom.content.rooms[2])).toBe('https://canva.link/abc');
+  });
+});
+
+describe('buildCanvaEmbedUrl', () => {
+  it('mengubah link lihat/edit Canva menjadi link embed', () => {
+    expect(buildCanvaEmbedUrl({ canvaUrl: 'https://www.canva.com/design/DAX/abc/view?utm_source=x#3' })).toBe(
+      'https://www.canva.com/design/DAX/abc/view?embed'
+    );
+    expect(buildCanvaEmbedUrl({ canvaUrl: 'https://www.canva.com/design/DAX/abc/edit' })).toBe(
+      'https://www.canva.com/design/DAX/abc/view?embed'
+    );
+  });
+
+  it('kosong bila link tidak diisi atau bukan link desain Canva', () => {
+    expect(buildCanvaEmbedUrl({ canvaUrl: '' })).toBe('');
+    expect(buildCanvaEmbedUrl({ canvaUrl: 'https://example.com/design/a/b' })).toBe('');
+    expect(buildCanvaEmbedUrl({ canvaUrl: 'bukan link' })).toBe('');
   });
 });

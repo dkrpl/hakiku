@@ -253,3 +253,26 @@ export function buildCanvaReturnUrl(settings, room) {
   url.searchParams.set('ui', b64);
   return url.toString();
 }
+
+/**
+ * Link Canva untuk ditampilkan DI DALAM web (Mode Kelas).
+ * Mengubah link "lihat" Canva (…/view atau …/edit) menjadi …/view?embed.
+ * Hasil kosong bila link Canva tidak diisi atau bukan link desain Canva.
+ */
+export function buildCanvaEmbedUrl(settings) {
+  const base = String(settings?.canvaUrl ?? '').trim();
+  if (!base) return '';
+  let url;
+  try {
+    url = new URL(base);
+  } catch {
+    return '';
+  }
+  if (!/(^|\.)canva\.com$/i.test(url.hostname)) return '';
+  const match = url.pathname.match(/^\/design\/([^/]+)\/([^/]+)/);
+  if (!match) return '';
+  url.pathname = `/design/${match[1]}/${match[2]}/view`;
+  url.search = '?embed';
+  url.hash = '';
+  return url.toString();
+}

@@ -6,6 +6,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { TopBar } from './components/TopBar';
 import { HomeScreen } from './screens/HomeScreen';
 import { ChallengeScreen } from './screens/ChallengeScreen';
+import { ClassroomScreen } from './screens/ClassroomScreen';
 import { HakikuCrest } from './components/illustrations/StoryArt';
 
 const MUTE_KEY = 'hakiku-hybrid:muted';
@@ -18,6 +19,11 @@ export function readRoomFromLocation(loc = window.location) {
   return ROOM_NUMBERS.includes(n) ? n : null;
 }
 
+// ?guru=1 membuka halaman guru (daftar tantangan). Tanpa parameter: Mode Kelas.
+export function readTeacherMode(loc = window.location) {
+  return new URLSearchParams(loc.search).has('guru');
+}
+
 function readMuted() {
   try {
     return window.localStorage.getItem(MUTE_KEY) === '1';
@@ -28,6 +34,8 @@ function readMuted() {
 
 export default function App({ loader = loadContent }) {
   const [roomNumber] = useState(() => readRoomFromLocation());
+  const [teacherMode] = useState(() => readTeacherMode());
+  const classroomMode = !roomNumber && !teacherMode;
   const [muted, setMuted] = useState(readMuted);
   const [loadInfo, setLoadInfo] = useState({ status: 'loading', content: null, source: '', warnings: [], error: '' });
 
@@ -48,9 +56,10 @@ export default function App({ loader = loadContent }) {
   }, [loader]);
 
   useEffect(() => {
+    if (classroomMode) return;
     const room = loadInfo.content?.rooms[roomNumber];
     document.title = room ? `Ruang ${room.number}: ${room.title} - HAKIKU` : 'Daftar Tantangan - HAKIKU';
-  }, [loadInfo.content, roomNumber]);
+  }, [loadInfo.content, roomNumber, classroomMode]);
 
   const playSound = useCallback(
     (kind) => {
@@ -79,13 +88,20 @@ export default function App({ loader = loadContent }) {
   return (
     <ErrorBoundary onRecover={() => window.location.reload()}>
       <div className="min-h-dvh flex flex-col bg-parchment text-ink">
-        <TopBar muted={muted} onToggleSound={toggleSound} />
+        {!classroomMode && <TopBar muted={muted} onToggleSound={toggleSound} />}
         <main id="main-content" className="flex-1 w-full">
           {loadInfo.status === 'loading' ? (
             <div role="status" className="min-h-dvh flex flex-col items-center justify-center gap-3 p-6 text-center">
               <HakikuCrest className="w-16 h-16 animate-pulse" />
               <p className="font-display font-extrabold text-xl text-ink m-0">Menyiapkan tantangan…</p>
             </div>
+          ) : classroomMode ? (
+            <ClassroomScreen
+              content={loadInfo.content}
+              onPlaySound={playSound}
+              muted={muted}
+              onToggleSound={toggleSound}
+            />
           ) : roomNumber ? (
             <ChallengeScreen
               room={loadInfo.content.rooms[roomNumber]}

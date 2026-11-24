@@ -57,6 +57,7 @@ export function DoorCodePanel({
   stars = 3,
   returnUrl = '',
   returnSeconds = 15,
+  onReturn,
   onRestart,
 }) {
   const headingRef = useRef(null);
@@ -77,6 +78,10 @@ export function DoorCodePanel({
 
   const goBackToCanva = useCallback(() => {
     setLeaving(true);
+    if (onReturn) {
+      onReturn();
+      return;
+    }
     if (returnUrl) {
       window.location.assign(returnUrl);
       return;
@@ -87,7 +92,7 @@ export function DoorCodePanel({
       // abaikan, ditangani di bawah
     }
     setTimeout(() => setCloseFailed(true), 400);
-  }, [returnUrl]);
+  }, [returnUrl, onReturn]);
 
   useEffect(() => {
     if (rolling || paused || leaving || returnSeconds <= 0) return undefined;
@@ -128,7 +133,12 @@ export function DoorCodePanel({
         </div>
 
         <p className="story-body font-bold text-ink m-0">
-          {returnUrl ? (
+          {onReturn ? (
+            <>
+              Hafalkan kodenya! Setelah kembali ke Canva, tekan <strong>Sudah Dapat Kode</strong>, lalu pilih angka{' '}
+              <strong>{doorCode}</strong> di <strong>{doorName}</strong>.
+            </>
+          ) : returnUrl ? (
             <>
               Hafalkan kodenya! Sebentar lagi kamu kembali ke Canva di <strong>{doorName}</strong>. Pilih angka{' '}
               <strong>{doorCode}</strong> di sana.

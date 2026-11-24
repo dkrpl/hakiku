@@ -1,25 +1,36 @@
 # Panduan Guru HAKIKU
 
-HAKIKU terdiri dari dua bagian yang dibuka lewat **satu link Canva**:
+HAKIKU terdiri dari dua bagian yang dibuka lewat **satu link web**: `https://hakiku-xmma.vercel.app`
 
-1. **Canva**: alur petualangan, peta, materi, video, dan pintu kode.
-2. **Web tantangan**: terbuka otomatis saat menekan tombol **Mulai Tantangan** di Canva. Isinya kuis atau sortir kartu. Di akhir tantangan muncul kode pintu.
+1. **Canva**: alur petualangan, peta, materi, video, dan pintu kode. Tampil di dalam web.
+2. **Tantangan**: kuis atau sortir kartu yang muncul di atas Canva saat tombol **🎮 Tantangan** diketuk. Di akhir tantangan muncul kode pintu.
 
 Semua isi tantangan diatur dari **Google Sheets "HAKIKU - Database"**, tanpa coding.
 
 ---
 
-## Alur di kelas
+## Persiapan (sekali saja)
 
-1. Buka link Canva HAKIKU dalam mode **Presentasi** (layar penuh) di laptop yang tersambung ke smartboard.
-2. Tekan **Mulai**, baca petunjuk bersama siswa, lalu masuk ke Ruang 1 dari peta.
-3. Setelah materi, tekan **Mulai Tantangan**. Web terbuka di tab baru.
+Di Canva, buka desain HAKIKU → **Bagikan** → Akses umum: **Siapa saja yang memiliki link** → **Dapat melihat**.
+Tanpa pengaturan ini, slide Canva tidak bisa tampil di dalam web.
+
+## Alur di kelas (Mode Kelas)
+
+1. Buka `https://hakiku-xmma.vercel.app` di laptop yang tersambung ke smartboard, lalu tekan **▶ Mulai Petualangan**. Layar menjadi penuh dan Canva tampil.
+   Bila layar penuh terlepas, ketuk tombol **⛶ Layar Penuh** di kiri atas.
+2. Tekan **Mulai** di slide, baca petunjuk bersama siswa, lalu masuk ke Ruang 1 dari peta.
+3. Setelah materi, di slide Tantangan siswa mengetuk tombol emas **🎮 Tantangan Ruang N** di **kanan atas**. Tombol ini selalu menunjuk ruang berikutnya yang belum selesai. Tantangan muncul di atas Canva, tidak pindah tab.
 4. Siswa mengerjakan tantangan langsung di smartboard. Kartu bisa digeser dengan jari, atau diketuk lalu pilih kotaknya.
 5. Siswa mendapat bintang (1–3, tergantung jumlah kesalahan), lalu **mengetuk gembok emas 3 kali** sampai terbuka. Angka kode pintu berputar lalu berhenti.
-   Setelah hitung mundur (bawaan 15 detik) web **pindah sendiri ke Canva, tepat di slide Pintu ruangan itu**. Siswa tinggal memilih kode yang benar. Siswa boleh menekan **Kembali ke Canva Sekarang**, atau **Tunggu, Aku Belum Hafal** untuk menjeda.
-   Penting: buka Canva di browser yang sudah login ke akun Canva pemilik desain (link kembali memakai mode **Lihat** desain ini).
-6. Di slide Pintu, siswa memilih kode yang benar. (Tombol **Sudah dapat kode** di slide tantangan tetap ada sebagai jalan cadangan.) Pintu terbuka dan ruangan berikutnya tidak lagi bergembok.
-7. Di Ruang 5, setelah kuis, tekan **Mulai Misi Blooket**. Setelah permainan selesai, kembali ke tab web lalu tekan **Misi Blooket Selesai** untuk mendapat kode terakhir.
+   Setelah hitung mundur (bawaan 15 detik) jendela tantangan tertutup sendiri dan **Canva terlihat lagi di slide yang sama**. Siswa boleh menekan **Kembali ke Canva Sekarang**, atau **Tunggu, Aku Belum Hafal** untuk menjeda.
+6. Di Canva, siswa menekan **Sudah Dapat Kode**, lalu memilih kode yang benar di slide Pintu. Pintu terbuka dan ruangan berikutnya tidak lagi bergembok.
+7. Di Ruang 5, setelah kuis, tekan **Mulai Misi Blooket** (Blooket terbuka di tab baru). Setelah permainan selesai, kembali ke tab HAKIKU, tekan **⛶ Layar Penuh**, lalu tekan **Misi Blooket Selesai** untuk mendapat kode terakhir.
+
+Catatan guru:
+- Di bagian atas jendela tantangan ada tombol ruang **1–5** untuk membuka ulang ruang mana saja.
+- Bila halaman dimuat ulang, tekan **Lanjutkan** untuk meneruskan dari ruang terakhir, atau **Mulai dari Awal**.
+- Halaman guru (daftar tantangan, status Google Sheets, kode pintu): `https://hakiku-xmma.vercel.app/?guru=1`.
+- Link per ruang (`?ruang=1` sampai `?ruang=5`) tetap bisa dibuka terpisah bila diperlukan.
 
 ## Mengubah isi tantangan (Google Sheets)
 
