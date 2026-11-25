@@ -211,7 +211,12 @@ function writeCache(tabs) {
  */
 export async function loadContent({ fetchImpl = globalThis.fetch, sheetId = resolveSheetId() } = {}) {
   if (!sheetId || typeof fetchImpl !== 'function') {
-    return { content: getDefaultContent(), source: 'bawaan', warnings: [], error: '' };
+    return {
+      content: getDefaultContent(),
+      source: 'bawaan',
+      warnings: [],
+      error: sheetId ? '' : 'ID Google Sheets belum diisi (src/config.js atau VITE_SHEET_ID).',
+    };
   }
 
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
